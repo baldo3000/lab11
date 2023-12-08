@@ -52,15 +52,15 @@ public final class ConcurrentGUI extends JFrame {
          * Register a listener that stops it
          */
         stop.addActionListener((e) -> agent.stopCounting());
-        up.addActionListener(e -> agent.setUp());
-        down.addActionListener(e -> agent.setDown());
+        up.addActionListener(e -> agent.setCountingUp());
+        down.addActionListener(e -> agent.setCountingDown());
     }
 
     /*
      * The counter agent is implemented as a nested class. This makes it
      * invisible outside and encapsulated.
      */
-    private class Agent implements Runnable {
+    private final class Agent implements Runnable {
         /*
          * Stop is volatile to ensure visibility. Look at:
          * 
@@ -72,14 +72,14 @@ public final class ConcurrentGUI extends JFrame {
          * 
          */
         private volatile boolean stop;
-        private int counter = 0;
+        private int counter;
         private volatile boolean isUp = true;
 
         @Override
         public void run() {
             while (!this.stop) {
                 try {
-                    // The EDT doesn't access `counter` anymore, it doesn't need to be volatile 
+                    // The EDT doesn't access `counter` anymore, it doesn't need to be volatile
                     final var nextText = Integer.toString(this.counter);
                     SwingUtilities.invokeAndWait(() -> ConcurrentGUI.this.display.setText(nextText));
                     this.counter = this.counter + (this.isUp ? 1 : -1);
@@ -92,8 +92,8 @@ public final class ConcurrentGUI extends JFrame {
                     ex.printStackTrace();
                 }
             }
-            for(var button : ConcurrentGUI.this.buttons){
-                try{
+            for (final var button : ConcurrentGUI.this.buttons) {
+                try {
                     SwingUtilities.invokeAndWait(() -> button.setEnabled(false));
                 } catch (InvocationTargetException | InterruptedException ex) {
                     ex.printStackTrace();
@@ -109,16 +109,16 @@ public final class ConcurrentGUI extends JFrame {
         }
 
         /**
-         * Set the counter to be increasing over time
+         * Set the counter to be increasing over time.
          */
-        public void setUp(){
+        public void setCountingUp() {
             this.isUp = true;
         }
 
         /**
-         * Set the counter to be decreasing over time
+         * Set the counter to be decreasing over time.
          */
-        public void setDown(){
+        public void setCountingDown() {
             this.isUp = false;
         }
     }

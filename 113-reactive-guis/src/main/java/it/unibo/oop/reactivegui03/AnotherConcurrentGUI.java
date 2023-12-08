@@ -20,7 +20,7 @@ public final class AnotherConcurrentGUI extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final double WIDTH_PERC = 0.2;
     private static final double HEIGHT_PERC = 0.1;
-    private static long TIME = 10000;
+    private static final long TIME = 10_000L;
     private final JLabel display = new JLabel();
 
     /**
@@ -66,15 +66,15 @@ public final class AnotherConcurrentGUI extends JFrame {
             up.setEnabled(false);
             down.setEnabled(false);
         });
-        up.addActionListener(e -> agent.setUp());
-        down.addActionListener(e -> agent.setDown());
+        up.addActionListener(e -> agent.setCountingUp());
+        down.addActionListener(e -> agent.setCountingDown());
     }
 
     /*
      * The counter agent is implemented as a nested class. This makes it
      * invisible outside and encapsulated.
      */
-    private class Agent implements Runnable {
+    private final class Agent implements Runnable {
         /*
          * Stop is volatile to ensure visibility. Look at:
          * 
@@ -87,7 +87,7 @@ public final class AnotherConcurrentGUI extends JFrame {
          */
         private volatile boolean stop;
         private volatile boolean isUp = true;
-        private int counter = 0;
+        private int counter;
 
         @Override
         public void run() {
@@ -116,16 +116,16 @@ public final class AnotherConcurrentGUI extends JFrame {
         }
 
         /**
-         * Set the counter to be increasing over time
+         * Set the counter to be increasing over time.
          */
-        public void setUp() {
+        public void setCountingUp() {
             this.isUp = true;
         }
 
         /**
-         * Set the counter to be decreasing over time
+         * Set the counter to be decreasing over time.
          */
-        public void setDown() {
+        public void setCountingDown() {
             this.isUp = false;
         }
     }
