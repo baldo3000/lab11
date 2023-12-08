@@ -1,7 +1,7 @@
 plugins {
     java
     application
-    id("org.danilopianini.gradle-java-qa") version "1.26.0"
+    id("org.danilopianini.gradle-java-qa") version "1.28.0"
 }
 
 tasks.javadoc {
@@ -25,7 +25,8 @@ val mainClass: String by project
 
 application {
     // The following allows to run with: ./gradlew -PmainClass=it.unibo.oop.MyMainClass run
-    mainClass.set(project.properties["mainClass"].toString())
+    // mainClass.set(project.properties["mainClass"].toString())
+    mainClass.set("it.unibo.oop.lab.streams.LambdaFilter")
 }
 
 val test by tasks.getting(Test::class) {
