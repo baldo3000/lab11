@@ -67,16 +67,7 @@ public class MultiThreadedSumMatrix implements SumMatrix {
      */
     @Override
     public double sum(final double[][] matrix) {
-        final int nrows = matrix.length;
-        final int ncols = matrix[0].length;
-        final double[] numbers = new double[ncols * nrows];
-        int pos = 0;
-        for (final var row : matrix) {
-            for (final var elem : row) {
-                numbers[pos] = elem;
-                pos++;
-            }
-        }
+        final double[] numbers = toArray(matrix);
         final int size = numbers.length % this.nthread + numbers.length / this.nthread;
         final List<Worker> workers = new ArrayList<>(nthread);
         for (int start = 0; start < numbers.length; start += size) {
@@ -95,5 +86,19 @@ public class MultiThreadedSumMatrix implements SumMatrix {
             }
         }
         return sum;
+    }
+
+    private double[] toArray(final double[][] matrix) {
+        final int nrows = matrix.length;
+        final int ncols = matrix[0].length;
+        final double[] numbers = new double[ncols * nrows];
+        int pos = 0;
+        for (final var row : matrix) {
+            for (final var elem : row) {
+                numbers[pos] = elem;
+                pos++;
+            }
+        }
+        return numbers;
     }
 }
