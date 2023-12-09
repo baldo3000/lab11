@@ -3,10 +3,17 @@ package it.unibo.oop.workers02;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is a classic implementation.
+ */
 public class MultiThreadedSumMatrix implements SumMatrix {
 
     private final int nthread;
 
+    /**
+     * @param nthreads
+     *                 the number of threads
+     */
     public MultiThreadedSumMatrix(final int nthreads) {
         this.nthread = nthreads;
     }
@@ -20,16 +27,16 @@ public class MultiThreadedSumMatrix implements SumMatrix {
         /**
          * Build a new worker.
          * 
-         * @param list
-         *            the list to sum
+         * @param array
+         *                 the array to sum
          * @param startpos
-         *            the initial position for this worker
+         *                 the initial position for this worker
          * @param nelem
-         *            the no. of elems to sum up for this worker
+         *                 the no. of elems to sum up for this worker
          */
         Worker(final double[] array, final int startpos, final int nelem) {
             super();
-            this.array = array;
+            this.array = array; // NOPMD
             this.startpos = startpos;
             this.nelem = nelem;
         }
@@ -54,14 +61,18 @@ public class MultiThreadedSumMatrix implements SumMatrix {
 
     }
 
+    /**
+     * @param matrix
+     *               the matrix to sum
+     */
     @Override
     public double sum(final double[][] matrix) {
         final int nrows = matrix.length;
         final int ncols = matrix[0].length;
         final double[] numbers = new double[ncols * nrows];
         int pos = 0;
-        for(final var row : matrix){
-            for(final var elem : row){
+        for (final var row : matrix) {
+            for (final var elem : row) {
                 numbers[pos] = elem;
                 pos++;
             }
@@ -71,11 +82,11 @@ public class MultiThreadedSumMatrix implements SumMatrix {
         for (int start = 0; start < numbers.length; start += size) {
             workers.add(new Worker(numbers, start, size));
         }
-        for (final Worker w: workers) {
+        for (final Worker w : workers) {
             w.start();
         }
         long sum = 0;
-        for (final Worker w: workers) {
+        for (final Worker w : workers) {
             try {
                 w.join();
                 sum += w.getResult();
